@@ -1333,6 +1333,16 @@ fn grep_color_env_no_warning_without_color() {
 }
 
 #[test]
+fn grep_color_env_malformed_value_is_ignored() {
+    let (_s, mut c) = ucmd();
+    c.env("GREP_COLOR", "4x2")
+        .args(&["--color=always", "foo"])
+        .pipe_in("foo\n")
+        .succeeds()
+        .stdout_only("\x1b[01;31m\x1b[Kfoo\x1b[m\x1b[K\n");
+}
+
+#[test]
 fn color_line_number_uses_green() {
     let (_s, mut c) = ucmd();
     c.args(&["--color=always", "-n", "foo"])
@@ -1390,6 +1400,17 @@ fn grep_colors_env_overrides() {
         .succeeds()
         .stdout_contains("\x1b[33m\x1b[Kfoo\x1b[m\x1b[K")
         .stdout_contains("\x1b[34m\x1b[K1\x1b[m\x1b[K");
+}
+
+#[test]
+fn grep_colors_env_stops_at_malformed_value() {
+    let (_s, mut c) = ucmd();
+    c.env("GREP_COLORS", "fn=4x2:ms=33")
+        .args(&["--color=always", "-H", "foo"])
+        .pipe_in("foo\n")
+        .succeeds()
+        .stdout_contains("\x1b[35m\x1b[K(standard input)\x1b[m\x1b[K")
+        .stdout_contains("\x1b[01;31m\x1b[Kfoo\x1b[m\x1b[K");
 }
 
 #[test]
