@@ -200,6 +200,9 @@ impl<'a> OutputWriter<'a> {
 
     /// Write an IO error to stderr.
     pub fn report_io_error(&self, label: &OsStr, err: &io::Error) {
+        // Skua patch: a write to a closed pipe ends grep silently with 141 on Windows, as
+        // SIGPIPE does on Unix (needs the patched uucore, skua/patches/uucore-0.12).
+        uucore::error::exit_if_stdout_pipe_closed();
         if !self.config.no_messages {
             // Strip the trailing " (os error XX)" so the message matches GNU grep.
             let _ = writeln!(
@@ -213,6 +216,7 @@ impl<'a> OutputWriter<'a> {
 
     /// Write the "binary file matches" message to stderr.
     pub fn report_binary_match(&self, path: &Path) {
+        uucore::error::exit_if_stdout_pipe_closed();
         let _ = writeln!(
             io::stderr(),
             "grep: {}: binary file matches",
