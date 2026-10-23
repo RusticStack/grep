@@ -256,10 +256,8 @@ fn quiet_match_overrides_file_error() {
     // match keeps the error status.
     // -q still reports a file it cannot read, but files after the first match
     // are never opened. -qs suppresses the report; the status is still 2.
-    #[cfg(not(windows))]
+    // Skua: Windows prints GNU's error text too (uucore fork).
     let expected = "grep: no-such-file: No such file or directory\n";
-    #[cfg(windows)]
-    let expected = "grep: no-such-file: The system cannot find the file specified.\n";
     let (_s, mut c) = ucmd();
     c.args(&["-q", "abc", "no-such-file", "-"])
         // -q may exit before the harness finishes writing stdin (EPIPE).
@@ -1742,10 +1740,8 @@ fn nonexistent_file_error_has_no_os_error_suffix() {
     // " (os error 2)" suffix; strip_errno keeps us byte-compatible. The
     // underlying OS message text differs on Windows, but in both cases the
     // trailing " (os error N)" must be absent.
-    #[cfg(not(windows))]
+    // Skua: Windows prints GNU's error text too (uucore fork).
     let expected = "grep: does-not-exist: No such file or directory\n";
-    #[cfg(windows)]
-    let expected = "grep: does-not-exist: The system cannot find the file specified.\n";
 
     let (_s, mut c) = ucmd();
     c.args(&["x", "does-not-exist"])

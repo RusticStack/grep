@@ -1245,7 +1245,7 @@ dependencies = [
 [[package]]
 name = "uucore"
 version = "0.12.0"
-source = "git+https://github.com/RusticStack/coreutils?rev=509f47988320446e9d15bc1344278e3c0c943c78#509f47988320446e9d15bc1344278e3c0c943c78"
+source = "git+https://github.com/RusticStack/coreutils?rev=2a7cb9334ab9bf7d70c694bf91f2886363f2d84f#2a7cb9334ab9bf7d70c694bf91f2886363f2d84f"
 dependencies = [
  "clap",
  "dns-lookup",
@@ -1269,7 +1269,7 @@ dependencies = [
 [[package]]
 name = "uucore_procs"
 version = "0.12.0"
-source = "git+https://github.com/RusticStack/coreutils?rev=509f47988320446e9d15bc1344278e3c0c943c78#509f47988320446e9d15bc1344278e3c0c943c78"
+source = "git+https://github.com/RusticStack/coreutils?rev=2a7cb9334ab9bf7d70c694bf91f2886363f2d84f#2a7cb9334ab9bf7d70c694bf91f2886363f2d84f"
 dependencies = [
  "proc-macro2",
  "quote",
