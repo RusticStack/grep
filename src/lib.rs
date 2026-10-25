@@ -278,10 +278,12 @@ pub fn uumain(args: impl uucore::Args) -> UResult<()> {
         }
     }
     if patterns.is_empty() && !has_explicit_patterns {
-        return Err(USimpleError::new(
-            2,
-            "no PATTERN specified. Try 'grep --help' for more information.".to_string(),
-        ));
+        // Skua: GNU grep's usage(EXIT_TROUBLE) text, as Git Bash's grep prints it.
+        eprintln!(
+            "Usage: {USAGE}
+Try 'grep --help' for more information."
+        );
+        return Err(USimpleError::new(2, String::new()));
     }
 
     // GNU grep's PCRE backend (-P) supports only a single pattern.
@@ -496,10 +498,17 @@ pub fn uumain(args: impl uucore::Args) -> UResult<()> {
     searcher.finish()
 }
 
+/// The usage line of Git Bash's grep (GNU grep 3.0), shown by `--help` and usage errors.
+const USAGE: &str = "grep [OPTION]... PATTERN [FILE]...";
+
 pub fn uu_app() -> Command {
     Command::new("grep")
         .version(env!("CARGO_PKG_VERSION"))
         .about("Search for PATTERNS in each FILE.")
+        // Skua: `Usage: grep [OPTION]...` first, as Git Bash's grep, not clap's `grep.exe [OPTIONS]`
+        // (the file name of argv[0]) after the description.
+        .override_usage(USAGE)
+        .help_template("{usage-heading} {usage}\n{about}\n\n{all-args}{after-help}")
         .disable_help_flag(true)
         .disable_version_flag(true)
         // GNU grep accepts repeated options (booleans are idempotent, value
